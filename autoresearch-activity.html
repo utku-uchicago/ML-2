@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Group Activity: Autonomous AI Research — ML II</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface2: #1e2233;
+  --border: #2a2f45;
+  --maroon: #8b1a1a;
+  --maroon-bright: #c0392b;
+  --maroon-glow: rgba(139,26,26,0.18);
+  --green: #00e5a0;
+  --green-dim: rgba(0,229,160,0.12);
+  --yellow: #f5c842;
+  --blue: #4fa3e0;
+  --text: #e8ecf4;
+  --text-dim: #8892aa;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* Top bar */
+.topbar {
+  background: var(--maroon);
+  padding: 0.6rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.topbar .course { color: rgba(255,255,255,0.7); }
+.topbar .title { color: #fff; font-weight: 600; }
+
+/* Timer */
+.timer-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0,0,0,0.3);
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--green);
+  cursor: pointer;
+  border: 1px solid rgba(0,229,160,0.2);
+  transition: all 0.2s;
+}
+.timer-widget:hover { background: rgba(0,229,160,0.08); }
+.timer-widget .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 1.2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* Hero */
+.hero {
+  padding: 4rem 2rem 3rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.hero .label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hero .label::after {
+  content: '';
+  height: 1px;
+  width: 40px;
+  background: var(--green);
+  opacity: 0.4;
+}
+
+.hero h1 {
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+
+.hero h1 span {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(139,26,26,0.6);
+  background: linear-gradient(90deg, var(--maroon-bright), #e55);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero .subtitle {
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  max-width: 560px;
+  margin-bottom: 2rem;
+}
+
+.meta-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.meta-pill {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.meta-pill.green { border-color: rgba(0,229,160,0.3); color: var(--green); }
+.meta-pill.yellow { border-color: rgba(245,200,66,0.3); color: var(--yellow); }
+.meta-pill.blue { border-color: rgba(79,163,224,0.3); color: var(--blue); }
+
+/* Divider */
+.divider {
+  max-width: 860px;
+  margin: 0 auto;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+/* Main content */
+.content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+/* Phase blocks */
+.phase {
+  margin: 2.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+.phase-number {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: var(--maroon);
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+}
+
+.phase-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  flex: 1;
+}
+
+.phase-time {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--yellow);
+  background: rgba(245,200,66,0.08);
+  padding: 0.2rem 0.7rem;
+  border-radius: 3px;
+  border: 1px solid rgba(245,200,66,0.2);
+}
+
+.phase-body {
+  padding: 1.5rem;
+}
+
+.phase-body p {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+/* Task list */
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.task-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.93rem;
+  color: var(--text);
+}
+
+.task-list li::before {
+  content: '▸';
+  color: var(--green);
+  font-size: 0.8rem;
+  margin-top: 0.22rem;
+  flex-shrink: 0;
+}
+
+/* Role badges */
+.roles {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.role-badge {
+  padding: 0.4rem 1rem;
+  border-radius: 5px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: var(--mono);
+  letter-spacing: 0.03em;
+}
+.role-badge.driver { background: rgba(79,163,224,0.12); color: var(--blue); border: 1px solid rgba(79,163,224,0.25); }
+.role-badge.navigator { background: rgba(245,200,66,0.10); color: var(--yellow); border: 1px solid rgba(245,200,66,0.25); }
+.role-badge.analyst { background: rgba(0,229,160,0.10); color: var(--green); border: 1px solid rgba(0,229,160,0.25); }
+.role-badge.presenter { background: rgba(139,26,26,0.2); color: #ff8080; border: 1px solid rgba(139,26,26,0.35); }
+
+/* Code block */
+.code-block {
+  background: #0a0d14;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 1rem 0;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+}
+
+.code-block .code-header {
+  background: var(--surface2);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.code-block .code-lang {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.copy-btn {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.55rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.copy-btn:hover { color: var(--green); border-color: rgba(0,229,160,0.3); }
+
+.code-block pre {
+  padding: 1rem;
+  overflow-x: auto;
+  line-height: 1.8;
+}
+
+.code-block .kw { color: #c792ea; }
+.code-block .fn { color: var(--blue); }
+.code-block .str { color: var(--green); }
+.code-block .cm { color: #546e7a; font-style: italic; }
+.code-block .num { color: var(--yellow); }
+
+/* Discussion prompts */
+.discuss-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+@media (max-width: 600px) { .discuss-grid { grid-template-columns: 1fr; } }
+
+.discuss-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 1rem;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  position: relative;
+  transition: border-color 0.2s;
+}
+.discuss-card:hover { border-color: rgba(139,26,26,0.5); }
+
+.discuss-card .q-num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--maroon-bright);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.08em;
+}
+
+/* Highlight box */
+.highlight-box {
+  background: var(--green-dim);
+  border: 1px solid rgba(0,229,160,0.2);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.highlight-box .icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+.warn-box {
+  background: rgba(245,200,66,0.07);
+  border: 1px solid rgba(245,200,66,0.2);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+  color: var(--text-dim);
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+/* Deliverable checklist */
+.checklist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.93rem;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 5px;
+  transition: background 0.15s;
+  border: 1px solid transparent;
+}
+.checklist li:hover { background: var(--surface2); border-color: var(--border); }
+.checklist li.checked { color: var(--text-dim); text-decoration: line-through; }
+
+.checklist li .checkbox {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 0.12rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.checklist li.checked .checkbox {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+  font-size: 0.65rem;
+}
+
+/* Section label */
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 2.5rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Colab button */
+.colab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--maroon);
+  color: #fff;
+  text-decoration: none;
+  padding: 0.65rem 1.4rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin: 0.5rem 0;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.colab-btn:hover { background: var(--maroon-bright); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(139,26,26,0.4); }
+
+/* Timer modal */
+.timer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.timer-overlay.open { display: flex; }
+
+.timer-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-align: center;
+  min-width: 300px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.timer-display {
+  font-family: var(--mono);
+  font-size: 4.5rem;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.05em;
+  margin: 1rem 0;
+  line-height: 1;
+}
+.timer-display.warning { color: var(--yellow); }
+.timer-display.danger { color: var(--maroon-bright); animation: pulse 0.8s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+.timer-phase-name {
+  font-size: 1rem;
+  color: var(--text-dim);
+  margin-bottom: 1.5rem;
+}
+
+.timer-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+.timer-btn {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: none;
+  color: var(--text);
+}
+.timer-btn.primary { background: var(--maroon); color: #fff; border-color: transparent; }
+.timer-btn.primary:hover { background: var(--maroon-bright); }
+.timer-btn:hover { border-color: var(--green); color: var(--green); }
+
+.timer-select {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.timer-preset {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: none;
+  color: var(--text-dim);
+  transition: all 0.2s;
+}
+.timer-preset:hover, .timer-preset.active { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div>
+    <span class="course">ML II — </span>
+    <span class="title">Group Activity: Autonomous AI Research</span>
+  </div>
+  <div class="timer-widget" onclick="openTimer()">
+    <div class="dot"></div>
+    <span id="topTimerDisplay">30:00</span>
+    <span style="opacity:0.5">START</span>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="label">In-Class Activity</div>
+  <h1>Can AI do <span>research</span><br>by itself?</h1>
+  <p class="subtitle">Explore Karpathy's <code style="background:#1e2233;padding:2px 6px;border-radius:3px;font-family:var(--mono);font-size:0.9em">autoresearch</code> — an agent that autonomously trains, evaluates, and iterates on LLMs overnight.</p>
+  <div class="meta-row">
+    <div class="meta-pill yellow">30 minutes</div>
+    <div class="meta-pill green">Groups of 3–4</div>
+    <div class="meta-pill blue">Google Colab</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="content">
+
+  <!-- Overview -->
+  <p class="section-label">Overview</p>
+
+  <div class="highlight-box">
+    <div>
+      <strong>The big idea:</strong> autoresearch gives an AI agent a real LLM training setup and lets it modify code, run 5-minute experiments, check if results improved, and repeat — all night, without human input. Your group will read the code, run a mini-version, and discuss what this means for the future of ML research.
+    </div>
+  </div>
+
+  <!-- Phase 1 -->
+  <p class="section-label">Activity Phases</p>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">PHASE 1</div>
+      <div class="phase-title">Setup & Orientation</div>
+      <div class="phase-time">0–7 min</div>
+    </div>
+    <div class="phase-body">
+      <p>Assign roles and get everyone oriented on what autoresearch actually does.</p>
+
+      <div class="roles">
+        <div class="role-badge driver">Driver</div>
+        <div class="role-badge navigator">Navigator</div>
+        <div class="role-badge analyst">Analyst</div>
+        <div class="role-badge presenter">Presenter</div>
+      </div>
+
+      <ul class="task-list">
+        <li><strong>Driver</strong> — opens the Colab notebook and shares screen</li>
+        <li><strong>Navigator</strong> — reads the <a href="https://github.com/karpathy/autoresearch" target="_blank" style="color:var(--blue)">autoresearch README</a> and directs what to run</li>
+        <li><strong>Analyst</strong> — tracks outputs and notes what changes between runs</li>
+        <li><strong>Presenter</strong> — prepares 2–3 key takeaways to share with the class</li>
+      </ul>
+
+      <div class="warn-box">
+        <div>No GPU needed for this activity — we'll only read and lightly modify the code, not run full training. Colab's free CPU is fine.</div>
+      </div>
+
+      <a class="colab-btn" href="https://colab.research.google.com/#create=true" target="_blank">
+        Open Google Colab
+      </a>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">PHASE 2</div>
+      <div class="phase-title">Code Exploration</div>
+      <div class="phase-time">7–18 min</div>
+    </div>
+    <div class="phase-body">
+      <p>Clone the repo in Colab and explore the three key files. The goal isn't to run training — it's to understand how the agent loop works.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">Python · Colab</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="cm"># Cell 1 — Clone the repo</span>
+<span class="fn">!git</span> clone https://github.com/karpathy/autoresearch
+<span class="kw">import</span> os; os.chdir(<span class="str">'autoresearch'</span>)
+
+<span class="cm"># Cell 2 — Inspect the three core files</span>
+<span class="fn">!wc</span> -l prepare.py train.py program.md   <span class="cm"># how big are they?</span>
+<span class="fn">!cat</span> program.md                          <span class="cm"># what does the agent read?</span>
+
+<span class="cm"># Cell 3 — Find the agent's edit targets in train.py</span>
+<span class="fn">!grep</span> -n <span class="str">"DEPTH\|TOTAL_BATCH_SIZE\|learning_rate"</span> train.py
+
+<span class="cm"># Cell 4 — Count how many hyperparams are exposed</span>
+<span class="fn">!grep</span> -c <span class="str">"^[A-Z_]* ="</span> train.py</pre>
+      </div>
+
+      <ul class="task-list">
+        <li>What does <code style="background:#0a0d14;padding:1px 5px;border-radius:3px;font-size:0.85em">program.md</code> tell the agent? Is it surprisingly short?</li>
+        <li>Which hyperparameters in <code style="background:#0a0d14;padding:1px 5px;border-radius:3px;font-size:0.85em">train.py</code> is the agent free to modify?</li>
+        <li>What is the single metric being optimized? Why <code style="background:#0a0d14;padding:1px 5px;border-radius:3px;font-size:0.85em">val_bpb</code>?</li>
+        <li>Why does every run use a fixed <strong>5-minute time budget</strong>?</li>
+      </ul>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">Python · Bonus — edit program.md</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="cm"># Cell 5 — Add one instruction to the agent</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'program.md'</span>, <span class="str">'a'</span>) <span class="kw">as</span> f:
+    f.write(<span class="str">"\n\n## Your Team's Constraint\n"</span>)
+    f.write(<span class="str">"Always try reducing DEPTH before changing anything else.\n"</span>)
+
+<span class="cm"># Then re-read to confirm</span>
+<span class="fn">!tail</span> -<span class="num">10</span> program.md</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">PHASE 3</div>
+      <div class="phase-title">Discussion</div>
+      <div class="phase-time">18–27 min</div>
+    </div>
+    <div class="phase-body">
+      <p>Step away from the screen. Each person picks one question to lead for 2 minutes.</p>
+
+      <div class="discuss-grid">
+        <div class="discuss-card">
+          <div class="q-num">Q 01</div>
+          The agent has no memory across sessions. Every run starts fresh from <code>train.py</code>. Is that a feature or a bug?
+        </div>
+        <div class="discuss-card">
+          <div class="q-num">Q 02</div>
+          Results aren't comparable across GPUs. Does this undermine the scientific value of what the agent discovers?
+        </div>
+        <div class="discuss-card">
+          <div class="q-num">Q 03</div>
+          <code>program.md</code> is described as "programming the program." How is this different from a traditional system prompt?
+        </div>
+        <div class="discuss-card">
+          <div class="q-num">Q 04</div>
+          If you ran this overnight on an H100, would you trust the model changes it made? What would you check first?
+        </div>
+        <div class="discuss-card">
+          <div class="q-num">Q 05</div>
+          What kind of ML research <em>can't</em> be automated this way? Where does human intuition still matter?
+        </div>
+        <div class="discuss-card">
+          <div class="q-num">Q 06</div>
+          Karpathy calls this "the story of how it all began." Is he being ironic — or is this genuinely a preview of future research labs?
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">PHASE 4</div>
+      <div class="phase-title">Group Debrief</div>
+      <div class="phase-time">27–30 min</div>
+    </div>
+    <div class="phase-body">
+      <p>Each <strong>Presenter</strong> shares 2–3 takeaways with the class. Use the checklist below to make sure your group covered the key ideas.</p>
+
+      <ul class="checklist" id="deliverableList">
+        <li onclick="toggleCheck(this)">
+          <div class="checkbox"></div>
+          Identified what <code>program.md</code> does and how to modify it
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="checkbox"></div>
+          Listed at least 3 hyperparameters the agent can change in <code>train.py</code>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="checkbox"></div>
+          Explained why a fixed 5-min budget makes experiments comparable
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="checkbox"></div>
+          Discussed one risk of fully autonomous code modification
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="checkbox"></div>
+          Formed a group opinion: is this research automation or research replacement?
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Resources -->
+  <p class="section-label">Resources</p>
+  <ul class="task-list">
+    <li><a href="https://github.com/karpathy/autoresearch" target="_blank" style="color:var(--blue)">github.com/karpathy/autoresearch</a> — the full repo</li>
+    <li><a href="https://utku-uchicago.github.io/ML-2/deep-learning-concepts.html" target="_blank" style="color:var(--blue)">Lecture 1: Deep Learning Concepts</a></li>
+    <li><a href="https://utku-uchicago.github.io/ML-2/pytorch-fundamentals.html" target="_blank" style="color:var(--blue)">Lecture 2: PyTorch Fundamentals</a></li>
+  </ul>
+
+</div>
+
+<!-- Timer Modal -->
+<div class="timer-overlay" id="timerOverlay" onclick="closeTimerOutside(event)">
+  <div class="timer-modal">
+    <div style="font-family:var(--mono);font-size:0.72rem;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;margin-bottom:0.5rem">Class Timer</div>
+    <div class="timer-display" id="timerDisplay">30:00</div>
+    <div class="timer-phase-name" id="timerPhaseName">Select a phase or start full session</div>
+    <div class="timer-select">
+      <button class="timer-preset" onclick="setTimer(7, 'Phase 1: Setup')">7 min</button>
+      <button class="timer-preset" onclick="setTimer(11, 'Phase 2: Code')">11 min</button>
+      <button class="timer-preset" onclick="setTimer(9, 'Phase 3: Discussion')">9 min</button>
+      <button class="timer-preset" onclick="setTimer(3, 'Phase 4: Debrief')">3 min</button>
+      <button class="timer-preset" onclick="setTimer(30, 'Full Session')">30 min</button>
+    </div>
+    <div class="timer-btns">
+      <button class="timer-btn primary" id="startStopBtn" onclick="toggleTimer()">Start</button>
+      <button class="timer-btn" onclick="resetTimer()">Reset</button>
+      <button class="timer-btn" onclick="closeTimer()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Timer ──────────────────────────────────────
+let timerSeconds = 30 * 60;
+let timerRunning = false;
+let timerInterval = null;
+let timerPhase = 'Full Session';
+
+function openTimer() {
+  document.getElementById('timerOverlay').classList.add('open');
+}
+function closeTimer() {
+  document.getElementById('timerOverlay').classList.remove('open');
+}
+function closeTimerOutside(e) {
+  if (e.target === document.getElementById('timerOverlay')) closeTimer();
+}
+
+function setTimer(minutes, phase) {
+  timerSeconds = minutes * 60;
+  timerPhase = phase;
+  timerRunning = false;
+  clearInterval(timerInterval);
+  document.getElementById('startStopBtn').textContent = 'Start';
+  document.getElementById('timerPhaseName').textContent = phase;
+  document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  updateTimerDisplay();
+}
+
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('startStopBtn').textContent = 'Resume';
+  } else {
+    timerRunning = true;
+    document.getElementById('startStopBtn').textContent = 'Pause';
+    timerInterval = setInterval(() => {
+      if (timerSeconds > 0) {
+        timerSeconds--;
+        updateTimerDisplay();
+      } else {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('startStopBtn').textContent = 'Start';
+        document.getElementById('timerPhaseName').textContent = 'Time\'s up!';
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  document.getElementById('startStopBtn').textContent = 'Start';
+  timerSeconds = 30 * 60;
+  timerPhase = 'Full Session';
+  document.getElementById('timerPhaseName').textContent = 'Select a phase or start full session';
+  document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  const str = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const el = document.getElementById('timerDisplay');
+  const top = document.getElementById('topTimerDisplay');
+  el.textContent = str;
+  top.textContent = str;
+  el.className = 'timer-display';
+  if (timerSeconds <= 60) el.classList.add('danger');
+  else if (timerSeconds <= 180) el.classList.add('warning');
+}
+
+// ── Copy Code ─────────────────────────────────
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 1500);
+  });
+}
+
+// ── Checklist ─────────────────────────────────
+function toggleCheck(li) {
+  li.classList.toggle('checked');
+  const cb = li.querySelector('.checkbox');
+  if (li.classList.contains('checked')) cb.textContent = '✓';
+  else cb.textContent = '';
+}
+</script>
+</body>
+</html>
